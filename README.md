@@ -2,7 +2,7 @@
 Portfolio re-balancer for binance. Herein I provide a script to automate digital asset portfolio re-balance at user specified intervals (defaults to every hour). Note this is long only spot portfolio.
 
 # Setup
-[Sign up for a Binance account](www.binance.com/en/register?ref=LTUMGDDC)
+[Sign up for a Binance account](https://www.binance.com/en/register?ref=LTUMGDDC)
 
 [Generate API keys](https://www.binance.com/userCenter/createApi.html)
 
@@ -30,12 +30,10 @@ XRP - rEb8TK3gBgk5auZkwc6sHnwrGVJH8DuaLh Tag: 103535357
 EOS - binancecleos Memo: 103117718
 
 # Recommended links
-Getting started - Coinbase - https://www.coinbase.com/join/bradle_6r
+Getting started - [Coinbase](https://www.coinbase.com/join/bradle_6r)
 
-Portfolio balance - Binance - www.binance.com/en/register?ref=LTUMGDDC
+Portfolio balance - [Binance](https://www.binance.com/en/register?ref=LTUMGDDC)
 
-Futures trading - Deribit - https://www.deribit.com/reg-8106.6912
+Futures trading - [Deribit](https://www.deribit.com/reg-8106.6912)
 
-Cold wallet - https://atomicWallet.io?kid=12GR52 (promo 12GR52) - https://hodler.tech/
-
-Learn to earn (coinbase users) - Stellar - https://coinbase.com/earn/xlm/invite/vps5dfzt - EOS - https://coinbase.com/earn/eos/invite/xdbgswqk
+Cold wallet - [Atomic](https://atomicWallet.io?kid=12GR52)
