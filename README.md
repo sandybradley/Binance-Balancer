@@ -8,7 +8,7 @@ Portfolio re-balancer for binance. Herein I provide a script to automate digital
 
 Enter keys in binance-balancer.py
 
-Edit portfolio assets and ratios to desired levels. Note that the ratios must sum to 1.0.
+Edit portfolio assets and ratios to desired levels. Note that the ratios must sum to 1.0
 
 pip install python-binance
 
