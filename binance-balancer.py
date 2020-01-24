@@ -114,9 +114,11 @@ def cancelOrders():
     orders = client.get_open_orders()
     for order in orders:
         sym = order['symbol']
-        orderid = order['orderId']
-        result = client.cancel_order(symbol=sym,orderId=orderid)
-        print(result)
+        asset = sym[0:-3]
+        if sym == 'BTCUSDT' or asset in lastweights:
+            orderid = order['orderId']
+            result = client.cancel_order(symbol=sym,orderId=orderid)
+            print(result)
 
 def step_size_to_precision(ss):
     return ss.find('1') - 1
@@ -182,7 +184,7 @@ def placeOrders():
                 elif asset == 'USDT':
                     sym = 'BTCUSDT'
                     amount = 0-diff
-                    if amount > thresh:
+                    if amount > ( thresh / BTCUSD ):
                         diffs[asset] = diffs[asset] + amount
                         diffs['BTC'] = diffs[asset] - amount
                         amount = format_value ( amount  , steps[sym] )
@@ -220,7 +222,7 @@ def placeOrders():
                 elif asset == 'USDT':
                     sym = 'BTCUSDT'
                     amount = diff
-                    if amount > thresh:
+                    if amount > ( thresh / BTCUSD ):
                         diffs[asset] = diffs[asset] - amount
                         diffs['BTC'] = diffs[asset] + amount
                         amount = format_value ( amount  , steps[sym] )
