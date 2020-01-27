@@ -1,18 +1,58 @@
 # Binance-Balancer
 Portfolio re-balancer for binance. Herein I provide a script to automate digital asset portfolio re-balance at user specified intervals (defaults to every hour). Note this is long only spot portfolio.
 
-# Setup
-[Sign up for a Binance account](https://www.binance.com/en/register?ref=LTUMGDDC)
+# Why diversify ?
 
-[Generate API keys](https://www.binance.com/userCenter/createApi.html)
+Diverse investments mitigate risk of loss and can offer significant return improvements over any single asset. The dawn of crypto enables anyone to set up their own portfolio at near zero cost. Moreover, I present tools to enable anyone to automate re-balancing at any interval, based on manually pre-defined allocations.
 
-Enter keys in binance-balancer.py
+# Why manually pre-defined ?
 
-Edit portfolio assets and ratios to desired levels. Note that the ratios must sum to 1.0
+Informed human intuition outperforms risk models by an order of magnitude. Here is an excerpt of our performance stress test results of varying portfolio strategies from the same basket of crypto's over the last 2 years, re-balancing hourly.
 
+![Portfolio backtests](backtest.png)
+
+Y axis is % Return On Investment
+
+X axis is number of hours since the start (2 years ago)
+
+# Which to choose ?
+
+Higher market cap coins offer more safety. After that, it becomes a personal choice based on foreseen security, value, utility, fees, speed. Once you have picked your top 10, say, you can see their correlations. 
+
+![Correlations](corrrelations.png)
+
+Highlighted in blue are the low correlations we are looking for. Note that in this case all correlations are positive. Since they are all in the currency class this is not unexpected but highlights the importance of investing also across asset classes.
+
+From the above example, we can choose a simple portfolio:
+
+![Correlations](pie.png)
+
+# How to setup my ETF ?
+
+Steps to get started:
+
+1. [Download and install python framework](https://www.python.org/downloads/)
+2. [Set up a Binance account](https://www.binance.com/en/register?ref=LTUMGDDC)
+3. [Generate API keys](https://www.binance.com/userCenter/createApi.html)
+4. Fund your Binance account
+5. Download this binance balancer script
+6. Edit API keys in binance_balancer.py
+7. Edit your configuration:
+
+```python
+lastweights = {     "BAT":0.1,         "XLM":0.1,     "BNB":0.1,      "BTC": 0.4,       "USDT": 0.3 }
+```
+Install dependencies:
+
+```
 pip install python-binance
+```
+Run the script (it will automatically re-balance for you every hour):
 
+```
 python binance-balancer.py
+```
+
 
 # Karma Jar
 BTC - 112eMCQJUkUz7kvxDSFCGf1nnFJZ61CE4W
