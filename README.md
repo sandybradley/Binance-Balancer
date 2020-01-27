@@ -19,7 +19,7 @@ X axis is number of hours since the start (2 years ago)
 
 Higher market cap coins offer more safety. After that, it becomes a personal choice based on foreseen security, value, utility, fees, speed. Once you have picked your top 10, say, you can see their correlations. 
 
-![Correlations](corrrelation.png)
+![Correlations](correlation.png)
 
 Highlighted in blue are the low correlations we are looking for. Note that in this case all correlations are positive. Since they are all in the currency class this is not unexpected but highlights the importance of investing also across asset classes.
 
