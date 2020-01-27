@@ -53,6 +53,9 @@ Run the script (it will automatically re-balance for you every hour):
 python binance-balancer.py
 ```
 
+# Final thoughts 
+
+Hopefully, you have found my software of value. I offer my extensive testing, results and software for your benefit. That is for financial sovereignty of the populous. Please consider donating.
 
 # Karma Jar
 BTC - 112eMCQJUkUz7kvxDSFCGf1nnFJZ61CE4W
