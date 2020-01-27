@@ -1,4 +1,4 @@
-# Binance-Balancer
+# Binance-Balancer - create your own ETF
 Portfolio re-balancer for binance. Herein I provide a script to automate digital asset portfolio re-balance at user specified intervals (defaults to every hour). Note this is long only spot portfolio.
 
 # Why diversify ?
