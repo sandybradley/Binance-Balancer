@@ -12,6 +12,10 @@ import pandas as pd
 import numpy as np
 from binance.client import Client
 from apscheduler.schedulers.blocking import BlockingScheduler
+from csv import writer
+from datetime import datetime
+import pprint
+
 
 # set keys
 api_key = ''
@@ -45,6 +49,9 @@ lastweights = {
     "BTC": 0.50,  
     "USDT": 0.25 } 
 
+# Timestamped bitcoin and usd portfolio value
+csvBalance = 'binance_balance_log.csv'
+
 # globals
 prices = {} # asset prices in btc
 prices['BTC'] = 1.0
@@ -59,6 +66,35 @@ minQtys = {}
 
 # connect
 client = Client(api_key, api_secret)
+# time offset binance bug fix
+# servTime = client.get_server_time()
+# time_offset  = servTime['serverTime'] - int(time.time() * 1000)
+
+def sanityCheck():
+    sane = False
+    sumWeights = round(sum(lastweights.values()),4)
+    if sumWeights == 1.0000:
+        sane = True
+    else:
+        print("Incorrect weights. Sum ratios must equal 1.0. Currently ",sumWeights)
+    return sane
+
+def append_list_as_row(file_name, list_of_elem):
+    # Open file in append mode
+    with open(file_name, 'a+', newline='') as write_obj:
+        # Create a writer object from csv module
+        csv_writer = writer(write_obj)
+        # Add contents of list as last row in the csv file
+        csv_writer.writerow(list_of_elem)
+
+def saveBalance():
+    # Returns a datetime object containing the local date and time
+    dateTimeObj = datetime.now()
+    # List of row elements (Timestamp, Bitcoin balance, USD balance, Notes)
+    row_contents = [str(dateTimeObj), str(totalbtc) , str(totalbtc * BTCUSD)]
+    # Append a list as new line to an old csv file
+    append_list_as_row(csvBalance, row_contents)
+
 
 def getPrices():
     global prices, BTCUSD
@@ -76,7 +112,7 @@ def getPrices():
             if asset in lastweights:
                 prices[asset] = p
     print('Prices (BTC)')
-    print(prices)
+    pprint.pprint(prices)
 
 def getBalance():
     global balances, balancesbtc, totalbtc 
@@ -94,7 +130,9 @@ def getBalance():
             totalbtc = totalbtc + bal * prices[asset]
     # print(balances)
     print("Balances (BTC)")
-    print(balancesbtc)
+    pprint.pprint(balancesbtc)
+    print("Total (BTC / USD)")
+    print(totalbtc," BTC /  $ ",totalbtc*BTCUSD)
 
 def getDiffs():
     global diffs
@@ -106,7 +144,7 @@ def getDiffs():
         diffs [ asset ] = diff
     diffs = dict(sorted(diffs.items(), key=lambda x: x[1]))
     print('Adjustments (BTC)')
-    print(diffs)
+    pprint.pprint(diffs)
 
 def cancelOrders():
     # cancel current orders
@@ -118,7 +156,7 @@ def cancelOrders():
         if sym == 'BTCUSDT' or asset in lastweights:
             orderid = order['orderId']
             result = client.cancel_order(symbol=sym,orderId=orderid)
-            print(result)
+            # print(result)
 
 def step_size_to_precision(ss):
     return ss.find('1') - 1
@@ -169,13 +207,15 @@ def placeOrders():
             if  diff <  -0.0001 : # threshold $ 1
                 if asset != 'BTC' and asset != 'USDT':
                     sym = asset + 'BTC'
-                    amount = 0-diff # amount in btc
-                    if amount > thresh:
-                        diffs[asset] = diffs[asset] + amount
-                        diffs['BTC'] = diffs[asset] - amount
-                        amount = format_value ( amount / prices[asset] , steps[asset] )
-                        price = format_value ( prices [ asset ] + 0.002 * prices [ asset ], ticks[asset] )# adjust for fee
-                        print('Setting sell order for {}'.format(asset))
+                    amountf = 0-diff # amount in btc
+                                          
+                    amount = format_value ( amountf / prices[asset] , steps[asset] )
+                    price = format_value ( prices [ asset ] + 0.003 * prices [ asset ], ticks[asset] )# adjust for fee
+                    minNotion = float(amount) * float(price)
+                    if minNotion > thresh:
+                        diffs[asset] = diffs[asset] + amountf
+                        diffs['BTC'] = diffs['BTC'] - amountf    
+                        print('Setting sell order for {}, amount:{}, price:{}, thresh:{}'.format(asset,amount,price,thresh))
                         order = client.order_limit_sell(
                             symbol = sym,
                             quantity = amount,
@@ -186,10 +226,10 @@ def placeOrders():
                     amount = 0-diff
                     if amount > ( thresh / BTCUSD ):
                         diffs[asset] = diffs[asset] + amount
-                        diffs['BTC'] = diffs[asset] - amount
+                        diffs['BTC'] = diffs['BTC'] - amount
                         amount = format_value ( amount  , steps[sym] )
-                        price = format_value ( BTCUSD - 0.002 * BTCUSD , ticks[sym])# adjust for fee
-                        print('Setting buy order for {}'.format(asset))
+                        price = format_value ( BTCUSD - 0.003 * BTCUSD , ticks[sym])# adjust for fee
+                        print('Setting buy order for {}, amount:{}, price:{}'.format(asset,amount,price))
                         order = client.order_limit_buy(
                             symbol = sym,
                             quantity = amount,
@@ -207,13 +247,15 @@ def placeOrders():
             if  diff >  0.0001 : # threshold $ 1
                 if asset != 'BTC' and asset != 'USDT':
                     sym = asset + 'BTC'
-                    amount = diff
-                    if amount > thresh:
-                        diffs[asset] = diffs[asset] - amount
-                        diffs['BTC'] = diffs[asset] + amount
-                        amount = format_value ( amount / prices[asset] , steps[asset] )
-                        price = format_value ( prices [ asset ] - 0.002 * prices [ asset ] , ticks[asset] )# adjust for fee
-                        print('Setting buy order for {}'.format(asset))
+                    amountf = diff
+
+                    amount = format_value ( amountf / prices[asset] , steps[asset] )
+                    price = format_value ( prices [ asset ] - 0.003 * prices [ asset ] , ticks[asset] )# adjust for fee
+                    minNotion = float(amount) * float(price)
+                    if minNotion > thresh:
+                        diffs[asset] = diffs[asset] - amountf
+                        diffs['BTC'] = diffs['BTC'] + amountf 
+                        print('Setting buy order for {}, amount:{}, price:{}, thresh:{}'.format(asset,amount,price,thresh))
                         order = client.order_limit_buy(
                             symbol = sym,
                             quantity = amount,
@@ -224,28 +266,31 @@ def placeOrders():
                     amount = diff
                     if amount > ( thresh / BTCUSD ):
                         diffs[asset] = diffs[asset] - amount
-                        diffs['BTC'] = diffs[asset] + amount
+                        diffs['BTC'] = diffs['BTC'] + amount
                         amount = format_value ( amount  , steps[sym] )
-                        price = format_value ( BTCUSD + 0.002 * BTCUSD , ticks[sym])# adjust for fee
-                        print('Setting sell order for {}'.format(asset))
+                        price = format_value ( BTCUSD + 0.003 * BTCUSD , ticks[sym])# adjust for fee
+                        print('Setting sell order for {}, amount:{}, price:{}'.format(asset,amount,price))
                         order = client.order_limit_sell(
                             symbol = sym,
                             quantity = amount,
                             price = price )
                 
 
-    print ( 'Final differences' )
-    print ( diffs )
+    # print ( 'Final differences' )
+    # pprint.pprint ( diffs )
 
 def iteratey():
-    getPrices()
-    getBalance()
-    getDiffs()
-    cancelOrders()
-    placeOrders()    
+    sane = sanityCheck()
+    if sane == True:
+        getPrices()
+        getBalance()
+        getDiffs()
+        cancelOrders()
+        placeOrders()   
+        saveBalance() 
 
 iteratey()
 
 scheduler = BlockingScheduler()
-scheduler.add_job(iteratey, 'interval', hours=1)
+scheduler.add_job(iteratey, 'interval', minutes=20)
 scheduler.start()
