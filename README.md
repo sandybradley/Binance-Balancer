@@ -9,7 +9,7 @@ Diverse investments mitigate risk of loss and can offer significant return impro
 
 Informed human intuition outperforms risk models by an order of magnitude. Here is an excerpt of our performance stress test results of varying portfolio strategies from the same basket of crypto's over the last 2 years, re-balancing hourly.
 
-![Portfolio backtests](newplot(6).png)
+![Portfolio backtests](newplot(7).png)
 
 Y axis is % Return On Investment
 
