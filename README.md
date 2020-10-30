@@ -9,7 +9,7 @@ Diverse investments mitigate risk of loss and can offer significant return impro
 
 Informed human intuition outperforms risk models by an order of magnitude. Here is an excerpt of our performance stress test results of varying portfolio strategies from the same basket of crypto's over the last 2 years, re-balancing hourly.
 
-![Portfolio backtests](newplot.png)
+![Portfolio backtests](newplot(6).png)
 
 Y axis is % Return On Investment
 
@@ -25,7 +25,7 @@ Highlighted in blue are the low correlations we are looking for. Note that in th
 
 From the above example, we can choose a simple portfolio:
 
-![Correlations](meta-chart.png)
+![Correlations](meta-chart(1).png)
 
 # How to setup my ETF ?
 
